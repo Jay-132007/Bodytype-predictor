@@ -1,7 +1,10 @@
 # how to run this file : go to terminal run--> streamlit run app.py 
 import streamlit as st
 import pandas as pd
+import matplotlib.pyplot as plt
 
+
+from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
@@ -155,15 +158,15 @@ st.write("")
 
 if st.button("🚀 Predict Body Type"):
 
-    # USER DATA
+    # data of user
     new_person = [[height, weight, bmi, bodyfat]]
 
-    # PREDICTION
+    # prediction
     prediction = model.predict(new_person)
 
     result = prediction[0]
 
-    # RESULT BOX
+    # result box
     st.markdown(
         f"""
         <div class="result-box">
@@ -175,8 +178,7 @@ if st.button("🚀 Predict Body Type"):
 
     st.write("")
 
-    # BODY TYPE MESSAGES
-
+    # body type message
     if result == "Ectomorph":
 
         st.info("⚡ Lean and slim body type with fast metabolism.")
@@ -205,7 +207,7 @@ if st.button("🚀 Predict Body Type"):
         )
 
 
-# SIDEBAR
+# sidebar
 st.sidebar.title("📊 Model Information")
 
 st.sidebar.success(f"Accuracy: {round(accuracy * 100, 2)}%")
@@ -220,3 +222,17 @@ st.sidebar.write("- BMI")
 st.sidebar.write("- Body Fat %")
 
 st.sidebar.info("Machine Learning Mini Project")
+
+# confusion matrix 
+cm = confusion_matrix(y_test, y_pred)
+st.subheader("📊 Confusion Matrix")
+fig, ax = plt.subplots()
+ax.matshow(cm, cmap="Blues")
+
+for i in range(len(cm)):
+    for j in range(len(cm)):
+        ax.text(j, i, cm[i, j], ha='center', va='center')
+
+plt.xlabel("Predicted")
+plt.ylabel("Actual")
+st.pyplot(fig)
